@@ -1,3 +1,5 @@
+Flask beharrezkoa da, horretarako ingurune birtuala sortu behar da eta bertan flask instalatu.
+
 Aplikazioa egiteko terminalean hurrengoa idatzi behar da:
 
 python3 run.py
