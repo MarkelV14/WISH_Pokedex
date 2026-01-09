@@ -1,0 +1,29 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #dc3545; /* Rojo Pokémon */
+    border-color: #dc3545;
+}
+
+.btn-primary:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}

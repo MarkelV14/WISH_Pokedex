@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Administrazio Panela{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">🏢 Administrazio Panela</h1>
+    
+    <!-- Usuarios pendientes -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5>⏳ Onartzeko Erabiltzaileak</h5>
+        </div>
+        <div class="card-body">
+            {% if pending_users %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Erabiltzailea</th>
+                        <th>Posta Elektronikoa</th>
+                        <th>Erregistro Data</th>
+                        <th>Ekintzak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in pending_users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.created_at[:10] if user.created_at else 'Data ezezaguna' }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.approve_user', user_id=user.id) }}" 
+                               class="btn btn-success btn-sm"
+                               onclick="return confirm('Ziur zaude {{ user.username }} erabiltzailea onartu nahi duzula?')">
+                               ✅ Onartu
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">Ez dago onartzeko erabiltzailerik.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Todos los usuarios -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5>👥 Erabiltzaile Guztiak</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Erabiltzailea</th>
+                        <th>Posta Elektronikoa</th>
+                        <th>Rola</th>
+                        <th>Egoera</th>
+                        <th>Erregistro Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">Administratzailea</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Erabiltzailea</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_approved %}
+                            <span class="badge bg-success">Onartua</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">Onartzeko</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.created_at[:10] if user.created_at else 'Data ezezaguna' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

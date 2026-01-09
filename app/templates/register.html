@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Erregistratu{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Erregistratu</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Erabiltzaile izena</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Posta elektronikoa</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Pasahitza</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+                        <div class="form-text">Gutxienez 6 karaktere</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Pasahitza berretsi</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Erregistratu</button>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-link">Dagoeneko kontua duzu? Hasi saioa</a>
+                </form>
+                <div class="alert alert-info mt-3">
+                    <small>
+                        📝 <strong>Oharra:</strong> Erregistroa burutu ondoren, administratzaileak zure kontua baieztatu behar du. 
+                        Baieztatzen denean mezu bat jasoko duzu.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
