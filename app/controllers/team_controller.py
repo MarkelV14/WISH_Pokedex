@@ -23,10 +23,17 @@ def team_blueprint():
 
         if request.method == 'POST':
             if 'finish_team' in request.form:
+                # --- NUEVO: Validar que sean 6 Pokémon (Para el Caso 7 de Markel) ---
+                if team_count < 6:
+                    flash('Taldeak 6 Pokémon izan behar ditu gordetzeko!', 'danger')
+                    return redirect(url_for('team.create_team'))
+                # -------------------------------------------------------------------
+                
                 flash('Aldaketak gordeta!', 'success')
                 return redirect(url_for('auth.dashboard'))
 
             pokemon_name = request.form.get('pokemon_name')
+            # ... (el resto sigue igual)
             
             if team_count >= 6:
                 flash('Taldea beteta dago! Joan "Taldea Kudeatu" atalera ezabatzeko.', 'warning')
@@ -36,21 +43,32 @@ def team_blueprint():
                 pokemon = team_model.get_pokemon_by_name(pokemon_name)
                 
                 if pokemon:
-                    team_model.add_pokemon_to_team(user_id, pokemon['PokemonID'], pokemon['Izena'])
+                    # --- CORRECCIÓN DE DUPLICADOS ---
+                    already_in_team = False
+                    if current_team:
+                        for member in current_team:
+                            if member['Izena'] == pokemon['Izena']:
+                                already_in_team = True
+                                break
                     
-                    # ALDAKETA 1: 'gehitu duzu' -> 'gehitu du' (Neutrala)
-                    msg_model = MessageModel(db)
-                    msg_text = f" {pokemon['Izena']} taldera gehitu du!" # <--- HEMEN
-                    msg_model.create_message(user_id, msg_text)
-                    
-                    flash(f'{pokemon["Izena"]} gehituta!', 'success')
-                    return redirect(url_for('team.create_team'))
+                    if already_in_team:
+                        flash(f'{pokemon["Izena"]} jadanik zure taldean dago!', 'warning')
+                    else:
+                        team_model.add_pokemon_to_team(user_id, pokemon['PokemonID'], pokemon['Izena'])
+                        
+                        msg_model = MessageModel(db)
+                        msg_text = f" {pokemon['Izena']} taldera gehitu du!" 
+                        msg_model.create_message(user_id, msg_text)
+                        
+                        flash(f'{pokemon["Izena"]} gehituta!', 'success')
+                        return redirect(url_for('team.create_team'))
+                    # --------------------------------
                 else:
                     flash(f'Ez da aurkitu "{pokemon_name}".', 'danger')
 
         return render_template('create_team.html', team=current_team, count=team_count, all_pokemon_names=all_names)
     
-    # RUTA 2: GESTIONAR / BORRAR (Taldea Kudeatu) - NUEVA
+    # RUTA 2: GESTIONAR / BORRAR (Taldea Kudeatu)
     @bp.route('/team/manage')
     def manage_team():
         if 'user_id' not in session:
@@ -60,7 +78,6 @@ def team_blueprint():
         team_model = TeamModel(db)
         user_id = session['user_id']
         
-        # Obtenemos el equipo para listarlo
         current_team = team_model.get_user_team(user_id)
         
         return render_template('manage_team.html', team=current_team)
@@ -77,13 +94,11 @@ def team_blueprint():
         
         team_model.delete_pokemon_from_team(user_id, entry_id)
         
-        # ALDAKETA 2: 'ezabatu duzu' -> 'ezabatu du' (Neutrala)
         msg_model = MessageModel(db)
-        msg_model.create_message(user_id, "Pokémon bat taldetik ezabatu du.") # <--- HEMEN
+        msg_model.create_message(user_id, "Pokémon bat taldetik ezabatu du.")
         
         flash('Pokémona taldetik ezabatu da.', 'info')
         
-        # IMPORTANTE: Ahora redirige a 'manage_team' (Kudeatu), no a create
         return redirect(url_for('team.manage_team'))
     
     return bp

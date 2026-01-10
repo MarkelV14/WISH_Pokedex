@@ -31,7 +31,14 @@
                         {% endif %}
                     </p>
                     <p><strong>Kide izanik:</strong> {{ user.created_at[:10] if user.created_at else 'Data ezezaguna' }}</p>
-                </div>
+
+                    <hr>
+                    <div class="d-grid">
+                        <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-outline-primary btn-sm">
+                            ✏️ Profila Editatu
+                        </a>
+                    </div>
+                    </div>
             </div>
         </div>
         
