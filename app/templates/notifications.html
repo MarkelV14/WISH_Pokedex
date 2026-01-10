@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Jakinarazpenak{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <h2 class="text-center mb-4">JAKINARAZPENAK:</h2>
+
+    <div class="p-4 rounded shadow" style="background-color: #d1d1cf;">
+        
+        <div class="bg-white p-3 rounded border border-secondary mb-4" 
+             style="height: 300px; overflow-y: auto; font-family: monospace; font-size: 1.1rem;">
+            
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="mb-2 pb-2 border-bottom">
+                        
+                        {% if msg.username == current_user %}
+                            <span class="text-primary fw-bold">ZUK:</span> 
+                            {{ msg.Mezua }}
+                        {% else %}
+                            <span class="text-danger fw-bold">[{{ msg.username|upper }}]:</span> 
+                            {{ msg.Mezua }}
+                        {% endif %}
+                        
+                        <br>
+                        <small class="text-muted" style="font-size: 0.7rem;">({{ msg.Data }})</small>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-muted mt-5">Ez dago jakinarazpenik.</p>
+            {% endif %}
+            
+        </div>
+
+        <div class="text-center">
+            {% if filter_type == 'all' %}
+                <a href="{{ url_for('notifications.view_notifications', filter='mine') }}" 
+                   class="btn btn-light border-dark fw-bold px-5 py-2">
+                   FILTRATU (Ikusi Nireak Soilik)
+                </a>
+            {% else %}
+                <a href="{{ url_for('notifications.view_notifications', filter='all') }}" 
+                   class="btn btn-dark fw-bold px-5 py-2">
+                   IKUSI DENAK
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

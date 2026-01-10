@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ p.Izena }} - Informazioa{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    
+    <div class="mb-2">
+        <a href="{{ url_for('pokedex.search', **previous_filters) }}" class="btn btn-sm btn-outline-secondary">
+            ⬅ Itzuli
+        </a>
+    </div>
+
+    <div class="card shadow border-dark" style="background-color: #dcdcdc;"> 
+        <div class="card-header bg-transparent border-0 pb-0">
+            <h3 class="fw-bold">{{ p.Izena }}</h3>
+        </div>
+        
+        <div class="card-body">
+            <div class="row">
+                
+                <div class="col-md-7">
+                    
+                    <div class="mb-3 ms-3">
+                        <p class="mb-1"><strong>Altuera:</strong> {{ p.Altuera }} m</p>
+                        <p class="mb-1"><strong>Pisua:</strong> {{ p.Pisua }} kg</p>
+                    </div>
+
+                    <div class="mb-3 ms-3">
+                        <strong>Motak:</strong>
+                        <ul class="list-unstyled ms-4 mt-1">
+                            {% for t in types %}
+                                <li>{{ t }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-3 ms-3">
+                        <strong>Ahuleziak:</strong>
+                        <ul class="list-unstyled ms-4 mt-1">
+                            {% if weaknesses %}
+                                {% for w in weaknesses %}
+                                    <li>{{ w }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>-</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-3 ms-3">
+                        <strong>Indarguneak:</strong>
+                        <ul class="list-unstyled ms-4 mt-1">
+                            {% if strengths %}
+                                {% for s in strengths %}
+                                    <li>{{ s }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>-</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-3 ms-3">
+                        <strong>Eboluzioak:</strong>
+                        <ul class="list-unstyled ms-4 mt-1">
+                            {% if evolutions %}
+                                {% for evo in evolutions %}
+                                    <li class="{% if evo == p.Izena %}fw-bold text-primary{% endif %}">
+                                        {{ evo }}
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li>Ez du eboluzionatzen</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="col-md-5 d-flex align-items-start justify-content-center">
+                    <div class="bg-white p-2 border border-secondary shadow-sm" style="width: 100%; max-width: 250px;">
+                        <img src="{{ p.Irudia }}" alt="{{ p.Izena }}" class="img-fluid">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

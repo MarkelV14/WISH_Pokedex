@@ -2,6 +2,9 @@ from flask import Blueprint, request, render_template, redirect, url_for, flash,
 from app.database.connection import DatabaseConnection
 from app.controllers.model.user_model import UserModel
 from app.controllers.model.auth_model import AuthModel
+# Importamos el TeamModel para contar los pokémon
+from app.controllers.model.team_model import TeamModel
+from app.controllers.model.pokedex_model import PokedexModel
 import datetime
 
 def auth_blueprint():
@@ -88,6 +91,7 @@ def auth_blueprint():
         flash('Saioa ongi itxi duzu', 'info')
         return response
     
+    # --- AQUÍ ESTABA EL ERROR DE INDENTACIÓN (Ahora corregido) ---
     @bp.route('/dashboard')
     def dashboard():
         if 'user_id' not in session:
@@ -99,7 +103,19 @@ def auth_blueprint():
             flash('Erabiltzailea ez da aurkitu', 'danger')
             return redirect(url_for('auth.logout'))
         
-        return render_template('dashboard.html', user=dict(user))
+        # 1. Contamos el equipo
+        team_model = TeamModel(db)
+        count = team_model.count_team_members(session['user_id'])
+        
+        # 2. NUEVO: Contamos la Pokédex (Capturados vs Faltan) 👇
+        pokedex_model = PokedexModel(db)
+        stats = pokedex_model.get_counts(session['user_id'])
+        
+        # 3. Pasamos 'poke_stats=stats' a la vista 👇
+        return render_template('dashboard.html', 
+                             user=dict(user), 
+                             team_count=count, 
+                             poke_stats=stats)
     
     @bp.route('/')
     def index():

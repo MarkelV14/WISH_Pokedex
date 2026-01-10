@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Taldea Kudeatu{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🛠️ Taldea Kudeatu</h1>
+        <div>
+            <a href="{{ url_for('team.create_team') }}" class="btn btn-success">➕ Gehitu Pokémon</a>
+            <a href="{{ url_for('auth.dashboard') }}" class="btn btn-secondary">🔙 Panela</a>
+        </div>
+    </div>
+
+    {% if team %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for member in team %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-danger">
+                    <div class="row g-0">
+                        <div class="col-4 d-flex align-items-center justify-content-center bg-light">
+                            {% if member.Irudia %}
+                            <img src="{{ member.Irudia }}" class="img-fluid" alt="{{ member.Izena }}">
+                            {% else %}
+                            <span style="font-size: 2rem;">🥚</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ member.Izena }}</h5>
+                                <p class="card-text text-muted mb-2">ID: {{ member.Pokemon_PokedexID }}</p>
+                                
+                                <a href="{{ url_for('team.delete_pokemon', entry_id=member.id) }}" 
+                                   class="btn btn-danger btn-sm w-100"
+                                   onclick="return confirm('Ziur zaude {{ member.Izena }} ezabatu nahi duzula?')">
+                                   🗑️ Ezabatu
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <h4>Zure taldea hutsik dago!</h4>
+            <p>Ez duzu Pokémonik kudeatzeko.</p>
+            <a href="{{ url_for('team.create_team') }}" class="btn btn-primary mt-2">Hasi taldea sortzen</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

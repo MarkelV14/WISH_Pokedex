@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Bilatu Pokémon{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">🔍 Pokémon Bilatzailea</h1>
+
+    <div class="card bg-light mb-4 shadow-sm">
+        <div class="card-body">
+            <form action="{{ url_for('pokedex.search') }}" method="GET" class="row g-2 align-items-end">
+                
+                <div class="col-md-3">
+                    <label for="type" class="form-label fw-bold small">Motak</label>
+                    <select class="form-select form-select-sm" id="type" name="type">
+                        <option value="Guztiak">Guztiak</option>
+                        {% for t in types %}
+                            <option value="{{ t.Izena }}" {% if t.Izena == current_type %}selected{% endif %}>
+                                {{ t.Izena }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="gen" class="form-label fw-bold small">Generazioa</label>
+                    <select class="form-select form-select-sm" id="gen" name="gen">
+                        <option value="Guztiak">Guztiak</option>
+                        {% for g in generations %}
+                            <option value="{{ g.Zenbakia }}" {% if g.Zenbakia|string == current_gen %}selected{% endif %}>
+                                {{ g.Zenbakia }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="name" class="form-label fw-bold small">Izena</label>
+                    <input type="text" class="form-control form-control-sm" id="name" name="name" 
+                           placeholder="" value="{{ current_name }}">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="evo" class="form-label fw-bold small">Eboluzioa</label>
+                    <select class="form-select form-select-sm" id="evo" name="evo">
+                        <option value="Guztiak">Guztiak</option>
+                        <option value="Bai" {% if current_evo == 'Bai' %}selected{% endif %}>Eboluzionatzen du</option>
+                        <option value="Ez" {% if current_evo == 'Ez' %}selected{% endif %}>Ez du eboluzionatzen</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-light border w-100 btn-sm">
+                        Aplikatu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        {% if pokemon_list %}
+            {% for poke in pokemon_list %}
+            <div class="col">
+                <a href="{{ url_for('pokedex.view_details', pokemon_id=poke.PokemonID, **request.args) }}" 
+                   class="text-decoration-none text-dark">
+                    
+                    <div class="card h-100 text-center shadow-sm" style="cursor: pointer; transition: transform 0.2s;">
+                        <img src="{{ poke.Irudia }}" class="card-img-top p-2" alt="{{ poke.Izena }}">
+                        <div class="card-body p-2">
+                            <small class="text-muted">#{{ poke.PokemonID }}</small>
+                            <h6 class="card-title fw-bold">{{ poke.Izena }}</h6>
+                            
+                            <p class="card-text small text-muted">
+                                H: {{ poke.Altuera }}m | W: {{ poke.Pisua }}kg
+                            </p>
+                        </div>
+                    </div>
+                    
+                </a> </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center mt-5">
+                <div class="alert alert-warning">
+                    <h4>Ez da emaitzarik aurkitu... 🐢</h4>
+                    <p>Saiatu beste izen edo filtro batekin.</p>
+                    <a href="{{ url_for('pokedex.search') }}" class="btn btn-outline-dark btn-sm">Garbitu Filtroak</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
