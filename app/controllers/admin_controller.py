@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, session
+from flask import Blueprint, render_template, redirect, url_for, flash, session, request
 from app.database.connection import DatabaseConnection
 from app.controllers.model.user_model import UserModel
 
@@ -32,6 +32,23 @@ def admin_blueprint():
     def approve_user(user_id):
         user_model.approve_user(user_id)
         flash(f'Erabiltzailea onartu da (ID: {user_id})', 'success')
+        return redirect(url_for('admin.admin_panel'))
+    
+    @bp.route('/admin/reject/<int:user_id>')
+    def reject_user(user_id):
+        user_model.reject_user(user_id)
+        flash(f'Erabiltzailea baztertu da (ID: {user_id})', 'warning')
+        return redirect(url_for('admin.admin_panel'))
+    
+    @bp.route('/admin/delete/<int:user_id>')
+    def delete_user(user_id):
+        # Prevenir que el admin se elimine a sí mismo
+        if session.get('user_id') == user_id:
+            flash('Ezin duzu zure burua ezabatu', 'danger')
+            return redirect(url_for('admin.admin_panel'))
+        
+        user_model.delete_user_permanently(user_id)
+        flash(f'Erabiltzailea ezabatu da (ID: {user_id})', 'danger')
         return redirect(url_for('admin.admin_panel'))
     
     return bp

@@ -9,7 +9,7 @@
     <!-- Usuarios pendientes -->
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
-            <h5>⏳ Onartzeko Erabiltzaileak</h5>
+            <h5>⏳ Onartzeko Erabiltzaileak ({{ pending_users|length }})</h5>
         </div>
         <div class="card-body">
             {% if pending_users %}
@@ -31,11 +31,18 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.created_at[:10] if user.created_at else 'Data ezezaguna' }}</td>
                         <td>
-                            <a href="{{ url_for('admin.approve_user', user_id=user.id) }}" 
-                               class="btn btn-success btn-sm"
-                               onclick="return confirm('Ziur zaude {{ user.username }} erabiltzailea onartu nahi duzula?')">
-                               ✅ Onartu
-                            </a>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('admin.approve_user', user_id=user.id) }}" 
+                                   class="btn btn-success btn-sm"
+                                   onclick="return confirm('Ziur zaude {{ user.username }} erabiltzailea onartu nahi duzula?')">
+                                   ✅ Onartu
+                                </a>
+                                <a href="{{ url_for('admin.reject_user', user_id=user.id) }}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Ziur zaude {{ user.username }} erabiltzailea baztertu nahi duzula? Hau betirako ezabatuko du.')">
+                                   ❌ Baztertu
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -50,7 +57,7 @@
     <!-- Todos los usuarios -->
     <div class="card">
         <div class="card-header bg-info text-white">
-            <h5>👥 Erabiltzaile Guztiak</h5>
+            <h5>👥 Erabiltzaile Guztiak ({{ all_users|length }})</h5>
         </div>
         <div class="card-body">
             <table class="table table-hover">
@@ -62,6 +69,7 @@
                         <th>Rola</th>
                         <th>Egoera</th>
                         <th>Erregistro Data</th>
+                        <th>Ekintzak</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,11 +93,68 @@
                             {% endif %}
                         </td>
                         <td>{{ user.created_at[:10] if user.created_at else 'Data ezezaguna' }}</td>
+                        <td>
+                            {% if user.id != session.user_id %}
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Ekintzak
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% if not user.is_approved %}
+                                    <li>
+                                        <a class="dropdown-item text-success" 
+                                           href="{{ url_for('admin.approve_user', user_id=user.id) }}">
+                                           ✅ Onartu
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    <li>
+                                        <a class="dropdown-item text-danger" 
+                                           href="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                                           onclick="return confirm('ZIUR ZAUDEN? {{ user.username }} erabiltzailea BETIRAKO EZABATUKO DA! Hau ezin da desegin.')">
+                                           🗑️ Ezabatu 
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% else %}
+                            <span class="text-muted">Zure kontua</span>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            
+            <!-- Estadísticas -->
+            <div class="mt-3 p-3 bg-light rounded">
+                <h6>📊 Estatistikak:</h6>
+                <div class="row">
+                    <div class="col-md-3">
+                        <span class="badge bg-primary">Guztira: {{ all_users|length }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="badge bg-success">Onartuak: {{ all_users|selectattr('is_approved')|list|length }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="badge bg-warning text-dark">Onartzeko: {{ pending_users|length }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="badge bg-danger">Administratzaileak: {{ all_users|selectattr('role', 'equalto', 'admin')|list|length }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+    
+    <!-- Información -->
+    <div class="alert alert-info mt-3">
+        <h6>ℹ️ Ekintzen Azalpena:</h6>
+        <ul class="mb-0">
+            <li><strong>✅ Onartu:</strong> Erabiltzaileari sarbidea ematen dio</li>
+            <li><strong>❌ Baztertu:</strong> Onartzeko eskaera baztertu eta erabiltzailea ezabatu (betirako)</li>
+            <li><strong>🗑️ Ezabatu:</strong> Erabiltzailea betirako ezabatu datu-baseatik</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

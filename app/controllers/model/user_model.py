@@ -5,6 +5,13 @@ class UserModel:
     def __init__(self, db):
         self.db = db
     
+    def delete_user_permanently(self, user_id):
+        query = "DELETE FROM users WHERE id = ?"
+        self.db.execute_query(query, (user_id,))
+    
+    def reject_user(self, user_id):
+        return self.delete_user_permanently(user_id)
+    
     def create_user(self, username, email, password, role='user'):
         # Verificar si el usuario ya existe
         if self.get_user_by_username(username):
