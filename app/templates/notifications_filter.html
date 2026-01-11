@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <h2 class="text-center mb-4">Aukeratu Erabiltzaileak (Filtratu)</h2>
+
+    <form method="POST" action="{{ url_for('notifications.filter_notifications') }}">
+        <div class="p-4 rounded shadow bg-light">
+            
+            <div class="mb-4">
+                <h5>Erabiltzaileak:</h5>
+                <div class="list-group">
+                    {% for user in users %}
+                    <label class="list-group-item">
+                        <input class="form-check-input me-1 user-checkbox" type="checkbox" name="user_ids" value="{{ user.id }}">
+                        {{ user.username }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('notifications.view_notifications') }}" class="btn btn-secondary" id="btn-itzuli">
+                    Itzuli
+                </a>
+                <button type="submit" class="btn btn-primary" id="btn-eguneratu">
+                    Eguneratu
+                </button>
+                </div>
+            
+            <input type="hidden" name="filter_users" value="custom"> 
+        </div>
+    </form>
+</div>
+{% endblock %}
