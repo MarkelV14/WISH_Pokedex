@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
 from app.database.connection import DatabaseConnection
 from app.controllers.model.message_model import MessageModel
-from app.controllers.model.user_model import UserModel # Necesario para listar usuarios
+from app.controllers.model.user_model import UserModel
 
 def notifications_blueprint():
     bp = Blueprint('notifications', __name__)
@@ -16,15 +16,22 @@ def notifications_blueprint():
         db = DatabaseConnection()
         msg_model = MessageModel(db)
         
-        # Lógica original + soporte para filtro customizado que viene de POST
-        messages = msg_model.get_all_messages()
+        # --- CORRECCIÓN: Leer el parámetro de la URL ---
+        # El botón envía ?filter=mine, así que debemos capturarlo aquí.
+        filter_type = request.args.get('filter', 'all')
+        
+        # Aplicar la lógica según el filtro
+        if filter_type == 'mine':
+            messages = msg_model.get_my_messages(user_id)
+        else:
+            messages = msg_model.get_all_messages()
             
         return render_template('notifications.html', 
                              messages=messages, 
-                             filter_type='all',
+                             filter_type=filter_type, # Pasamos el tipo real para que el botón cambie
                              current_user=username)
 
-    # --- NUEVA RUTA PARA CUMPLIR CON LOS TESTS ---
+    # --- RUTA PARA FILTRO AVANZADO (Checkboxes) ---
     @bp.route('/notifications/filter', methods=['GET', 'POST'])
     def filter_notifications():
         if 'user_id' not in session:
@@ -32,31 +39,42 @@ def notifications_blueprint():
             
         db = DatabaseConnection()
         
-        # GET: Mostrar pantalla de selección (Checkboxes)
+        # GET: Mostrar pantalla de selección
         if request.method == 'GET':
             user_model = UserModel(db)
-            all_users = user_model.get_all_users() # Necesitas este método en UserModel
+            # Asegúrate de que 'get_all_users' exista en tu UserModel
+            all_users = user_model.get_all_users() 
             return render_template('notifications_filter.html', 
                                  users=all_users, 
                                  current_user=session['username'])
         
-        # POST: Procesar el filtro "Eguneratu"
+        # POST: Procesar el filtro seleccionado
         if request.method == 'POST':
             msg_model = MessageModel(db)
             
-            # Si viene "all" o una lista de IDs
-            if request.form.get('filter_users') == 'all':
-                 messages = msg_model.get_all_messages()
-            else:
-                 # Recoger IDs seleccionados (checkboxes)
-                 selected_ids = request.form.getlist('user_ids')
-                 # Nota: Necesitarás implementar get_messages_by_users en MessageModel
-                 messages = msg_model.get_messages_by_users(selected_ids) 
+            filter_option = request.form.get('filter_users')
             
-            # Renderizar notifications.html con los mensajes filtrados
+            if filter_option == 'all':
+                 messages = msg_model.get_all_messages()
+                 current_filter = 'all'
+            else:
+                 # Recoger IDs seleccionados
+                 selected_ids = request.form.getlist('user_ids')
+                 
+                 # NOTA IMPORTANTE:
+                 # Debes crear el método 'get_messages_by_users' en MessageModel
+                 # para que esta línea funcione. Si no, dará error.
+                 if hasattr(msg_model, 'get_messages_by_users'):
+                    messages = msg_model.get_messages_by_users(selected_ids)
+                 else:
+                    # Fallback si no has creado el método aún
+                    messages = msg_model.get_all_messages()
+                 
+                 current_filter = 'custom'
+            
             return render_template('notifications.html', 
                                  messages=messages, 
-                                 filter_type='custom',
+                                 filter_type=current_filter,
                                  current_user=session['username'])
     
     return bp
