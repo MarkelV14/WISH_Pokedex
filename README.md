@@ -16,7 +16,7 @@ python run.py
 
 
 
-### === Testen exekuzioa ===
+### === Testen exekuzioa === ###
 
 Proiektu honek proba automatizatuen bateria osoa dauka aplikazioaren funtzionalitate kritikoak (Autentikazioa, Pokedex,Pokemonak, Taldeak, Chatbot eta ChangeLog) eta egonkortasuna bermatzeko.
 
@@ -25,7 +25,7 @@ Test hauek exekutatzeko, kodearen estaldura (coverage) neurtzeko eta HTML format
 ```bash
 pytest --cov=app --html=reporte_final_completo.html
 
-Exekuzioa amaitzean, reporte_final_completo.html fitxategia sortuko da. Fitxategi hau nabigatzailean ireki dezakezu testen emaitzak.
+Exekuzioa amaitzean, reporte_final_completo.html fitxategia sortuko da. Fitxategi hau nabigatzailean ireki dezakezu testen emaitzak ikusteko.
 
 === Aurrebaldintzak ===
 Testak exekutatu ahal izateko, ziurtatu beharrezko liburutegiak instalatuta dituzula (pytest eta bere pluginak):
