@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Estatistikak{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    
+    <div class="text-center mb-4">
+        <h2>📊 Pokemon Estatistikak</h2>
+        <p class="text-muted">Idatzi Pokemon baten izena bere datuak ikusteko.</p>
+    </div>
+
+    <div class="card shadow-sm p-4 mb-4 bg-light">
+        <form action="{{ url_for('chatbot.stats') }}" method="POST" class="d-flex gap-2">
+            
+            <input type="text" 
+                   name="pokemon_name" 
+                   class="form-control" 
+                   placeholder="Adib: Gyra..." 
+                   list="pokemon_list" 
+                   required>
+            
+            <datalist id="pokemon_list">
+                {% for name in all_names %}
+                    <option value="{{ name }}">
+                {% endfor %}
+            </datalist>
+
+            <button type="submit" class="btn btn-primary">Bilatu</button>
+        </form>
+    </div>
+
+    {% if pokemon %}
+    <div class="card shadow border-dark fade-in">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">{{ pokemon.Izena }}</h3>
+            <span class="badge bg-warning text-dark">ID: {{ pokemon.PokemonID }}</span>
+        </div>
+        
+        <div class="card-body">
+            <div class="text-center mb-3">
+                <img src="{{ pokemon.Irudia }}" alt="{{ pokemon.Izena }}" class="img-fluid" style="width: 150px;">
+            </div>
+
+            <div class="mb-2">
+                <strong>PS (HP):</strong> {{ pokemon.PS }}
+                <div class="progress">
+                    <div class="progress-bar bg-success" style="width: {{ (pokemon.PS / 255) * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <strong>Erasoa:</strong> {{ pokemon.Eraso }}
+                <div class="progress">
+                    <div class="progress-bar bg-danger" style="width: {{ (pokemon.Eraso / 190) * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <strong>Defentsa:</strong> {{ pokemon.Defentsa }}
+                <div class="progress">
+                    <div class="progress-bar bg-primary" style="width: {{ (pokemon.Defentsa / 230) * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <strong>Abiadura:</strong> {{ pokemon.Abiadura }}
+                <div class="progress">
+                    <div class="progress-bar bg-info" style="width: {{ (pokemon.Abiadura / 180) * 100 }}%"></div>
+                </div>
+            </div>
+             
+             <div class="row mt-3 text-center">
+                <div class="col-6">
+                    <small class="text-muted">Def. Berezia</small><br>
+                    <strong>{{ pokemon.Defentsa_esp }}</strong>
+                </div>
+                </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('chatbot.menu') }}" class="btn btn-outline-dark">
+            ⬅ Itzuli ChatBot-era
+        </a>
+    </div>
+
+</div>
+{% endblock %}

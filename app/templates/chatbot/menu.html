@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ChatBot Laguntzailea{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 700px; background-color: #dcdcdc; min-height: 400px;">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">🤖 ChatBot</h5>
+            <a href="{{ url_for('pokedex.view_pokedex') }}" class="btn btn-sm btn-danger">X</a>
+        </div>
+        
+        <div class="card-body d-flex align-items-center justify-content-center">
+            <div class="row w-100 g-4">
+                
+                <div class="col-md-6">
+                    <a href="{{ url_for('chatbot.best_pokemon') }}" class="btn btn-light w-100 py-4 shadow-sm fw-bold fs-5">
+                        🏆 Pokemon Hoberena
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ url_for('chatbot.stats') }}" class="btn btn-light w-100 py-4 shadow-sm fw-bold fs-5">
+                        📊 Estatistikak
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ url_for('chatbot.matchups') }}" class="btn btn-light w-100 py-4 shadow-sm fw-bold fs-5">
+                        ⚔️ Ahulezi eta Indargune
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ url_for('chatbot.evolution') }}" class="btn btn-light w-100 py-4 shadow-sm fw-bold fs-5">
+                        🧬 Eboluzio Katea
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

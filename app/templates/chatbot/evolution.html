@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Eboluzio Katea{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 900px;"> <div class="text-center mb-4">
+        <h2>🧬 Eboluzio Kate Osoa</h2>
+        <p class="text-muted">Bilatu Pokemon bat eta ikusi bere etorkizuneko forma guztiak.</p>
+    </div>
+
+    <div class="card shadow-sm p-4 mb-4 bg-light">
+        <form action="{{ url_for('chatbot.evolution') }}" method="POST" class="d-flex gap-2">
+            <input type="text" name="pokemon_name" class="form-control" placeholder="Adib: Bulbasaur" list="pokemon_list" required>
+            <datalist id="pokemon_list">
+                {% for name in all_names %}<option value="{{ name }}">{% endfor %}
+            </datalist>
+            <button type="submit" class="btn btn-primary">Bilatu</button>
+        </form>
+    </div>
+
+    {% if no_evolution_msg and current_pokemon %}
+        <div class="alert alert-info text-center shadow-sm fade-in">
+            <h4 class="alert-heading">🚫 Ez dauka eboluziorik</h4>
+            <hr>
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <img src="{{ current_pokemon.Irudia }}" width="80">
+                <p class="mb-0 fw-bold">{{ current_pokemon.Izena }} Pokemonak ez dauka hurrengo eboluziorik.</p>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if evolution_chain and current_pokemon %}
+    <div class="card shadow border-info fade-in">
+        <div class="card-header bg-info text-white text-center fw-bold">
+            Eboluzio Prozesua
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+                
+                <div class="text-center">
+                    <img src="{{ current_pokemon.Irudia }}" class="img-fluid mb-2" style="width: 120px;">
+                    <h5>{{ current_pokemon.Izena }}</h5>
+                    <span class="badge bg-secondary">Hasiera</span>
+                </div>
+
+                {% for evo in evolution_chain %}
+                    
+                    <div class="text-center">
+                        <h2 class="text-muted">➡️</h2>
+                    </div>
+
+                    <div class="text-center">
+                        <img src="{{ evo.Irudia }}" class="img-fluid mb-2" style="width: 120px;">
+                        <h5>{{ evo.Izena }}</h5>
+                        <span class="badge bg-success">Eboluzioa</span>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('chatbot.menu') }}" class="btn btn-outline-dark">⬅ Itzuli ChatBot-era</a>
+    </div>
+
+</div>
+{% endblock %}

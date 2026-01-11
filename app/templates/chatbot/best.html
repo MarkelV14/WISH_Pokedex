@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Pokemon Hoberena{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    
+    <div class="mb-4">
+        <h2>🏆 Nire Taldeko Onena</h2>
+        <p class="text-muted">Zure taldean daukazun Pokemon indartsuena kalkulatuko dugu.</p>
+    </div>
+
+    <div class="mb-4">
+        <form action="{{ url_for('chatbot.best_pokemon') }}" method="POST">
+            <button type="submit" class="btn btn-lg btn-success shadow">
+                🔍 Bilatu nire taldean
+            </button>
+        </form>
+    </div>
+
+    {% if pokemon %}
+    <div class="card shadow mx-auto border-warning mt-4" style="max-width: 500px;">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="fw-bold mb-0">🌟 {{ pokemon.Izena }} 🌟</h3>
+        </div>
+        <div class="card-body">
+            <img src="{{ pokemon.Irudia }}" class="img-fluid mb-3" style="width: 200px;">
+            <h4 class="text-success fw-bold">Puntuazioa: {{ pokemon.Totala }}</h4>
+            <hr>
+            <div class="row">
+                <div class="col-6 text-end">Erasoa:</div>
+                <div class="col-6 text-start fw-bold">{{ pokemon.Eraso }}</div>
+                
+                <div class="col-6 text-end">Defentsa:</div>
+                <div class="col-6 text-start fw-bold">{{ pokemon.Defentsa }}</div>
+                
+                <div class="col-6 text-end">Abiadura:</div>
+                <div class="col-6 text-start fw-bold">{{ pokemon.Abiadura }}</div>
+                
+                <div class="col-6 text-end">PS:</div>
+                <div class="col-6 text-start fw-bold">{{ pokemon.PS }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-5">
+        <a href="{{ url_for('chatbot.menu') }}" class="btn btn-outline-dark">
+            ⬅ Itzuli Menura
+        </a>
+    </div>
+
+</div>
+{% endblock %}

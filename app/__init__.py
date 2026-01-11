@@ -8,6 +8,7 @@ from app.controllers.pokedex_controller import pokedex_blueprint
 from app.controllers.team_controller import team_blueprint
 from app.controllers.notifications_controller import notifications_blueprint
 from app.controllers.friend_controller import friend_blueprint
+from app.controllers.chatbot_controller import chatbot_bp
 
 def create_app():
     app = Flask(__name__)
@@ -24,6 +25,7 @@ def create_app():
     app.register_blueprint(pokedex_blueprint())
     app.register_blueprint(notifications_blueprint())
     app.register_blueprint(friend_blueprint())
+    app.register_blueprint(chatbot_bp)
     app.secret_key = Config.SECRET_KEY
     
     return app

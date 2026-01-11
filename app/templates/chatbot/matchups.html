@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Ahulezi eta Indarguneak{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 800px;">
+    
+    <div class="text-center mb-4">
+        <h2>⚔️ Ahulezi eta Indarguneak</h2>
+        <p class="text-muted">Ikusi norentzat den arriskutsua eta nork irabazten dion.</p>
+    </div>
+
+    <div class="card shadow-sm p-4 mb-4 bg-light">
+        <form action="{{ url_for('chatbot.matchups') }}" method="POST" class="d-flex gap-2">
+            <input type="text" 
+                   name="pokemon_name" 
+                   class="form-control" 
+                   placeholder="Adib: Charmander" 
+                   list="pokemon_list"
+                   required>
+            
+            <datalist id="pokemon_list">
+                {% for name in all_names %}
+                    <option value="{{ name }}">
+                {% endfor %}
+            </datalist>
+
+            <button type="submit" class="btn btn-primary">Bilatu</button>
+        </form>
+    </div>
+
+    {% if pokemon %}
+    <div class="card shadow border-dark fade-in">
+        <div class="card-header bg-dark text-white text-center">
+            <h3 class="mb-0">{{ pokemon.Izena }}</h3>
+            <span class="small">
+                Motak: 
+                {% for t in types %}
+                    <span class="badge bg-secondary">{{ t }}</span>
+                {% endfor %}
+            </span>
+        </div>
+        
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <img src="{{ pokemon.Irudia }}" alt="{{ pokemon.Izena }}" class="img-fluid" style="width: 150px;">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card border-danger h-100">
+                        <div class="card-header bg-danger text-white fw-bold text-center">
+                            🔻 Ahula hauen aurka (Weak)
+                        </div>
+                        <ul class="list-group list-group-flush text-center">
+                            {% if weaknesses %}
+                                {% for w in weaknesses %}
+                                    <li class="list-group-item">{{ w }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="list-group-item text-muted">Ez du ahuleziarik</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="card border-success h-100">
+                        <div class="card-header bg-success text-white fw-bold text-center">
+                            🔥 Indartsua hauen aurka (Strong)
+                        </div>
+                        <ul class="list-group list-group-flush text-center">
+                            {% if strengths %}
+                                {% for s in strengths %}
+                                    <li class="list-group-item">{{ s }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="list-group-item text-muted">Ez du indargunerik</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('chatbot.menu') }}" class="btn btn-outline-dark">
+            ⬅ Itzuli ChatBot-era
+        </a>
+    </div>
+
+</div>
+{% endblock %}

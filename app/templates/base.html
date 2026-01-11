@@ -26,6 +26,9 @@
                     <a class="nav-link" href="{{ url_for('pokedex.search') }}">
     🔍 Bilatu
 </a>
+                    <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('chatbot.menu') }}">🤖 ChatBot</a>
+</li>
                     {% if session.role == 'admin' %}
                     <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">🏢 Administrazioa</a>
                     {% endif %}
