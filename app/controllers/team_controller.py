@@ -6,7 +6,7 @@ from app.controllers.model.message_model import MessageModel
 def team_blueprint():
     bp = Blueprint('team', __name__)
     
-    # RUTA 1: CREAR / AÑADIR (Sortu Taldea)
+    #  CREAR / AÑADIR (Sortu Taldea)
     @bp.route('/team/create', methods=['GET', 'POST'])
     def create_team():
         if 'user_id' not in session:
@@ -23,17 +23,17 @@ def team_blueprint():
 
         if request.method == 'POST':
             if 'finish_team' in request.form:
-                # --- NUEVO: Validar que sean 6 Pokémon (Para el Caso 7 de Markel) ---
+                
                 if team_count < 6:
                     flash('Taldeak 6 Pokémon izan behar ditu gordetzeko!', 'danger')
                     return redirect(url_for('team.create_team'))
-                # -------------------------------------------------------------------
+                
                 
                 flash('Aldaketak gordeta!', 'success')
                 return redirect(url_for('auth.dashboard'))
 
             pokemon_name = request.form.get('pokemon_name')
-            # ... (el resto sigue igual)
+            
             
             if team_count >= 6:
                 flash('Taldea beteta dago! Joan "Taldea Kudeatu" atalera ezabatzeko.', 'warning')

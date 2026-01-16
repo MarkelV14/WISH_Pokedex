@@ -55,7 +55,7 @@ def pokedex_blueprint():
             
         return redirect(url_for('pokedex.view_pokedex'))
 
-# ... (importak eta gainerako kodea) ...
+
 
     @bp.route('/pokedex/search')
     def search():
@@ -68,8 +68,8 @@ def pokedex_blueprint():
         # 1. Parametro guztiak jaso URLtik
         name_query = request.args.get('name', '')
         type_query = request.args.get('type', 'Guztiak')
-        gen_query = request.args.get('gen', 'Guztiak')   # BERRIA
-        evo_query = request.args.get('evo', 'Guztiak')   # BERRIA
+        gen_query = request.args.get('gen', 'Guztiak')   
+        evo_query = request.args.get('evo', 'Guztiak')   
         
         # 2. Iragazkiak prestatu ('Guztiak' kudeatu)
         type_filter = type_query if type_query != 'Guztiak' else None
@@ -81,17 +81,17 @@ def pokedex_blueprint():
         
         # 4. Desplegableak betetzeko datuak lortu
         all_types = poke_model.get_all_types()
-        all_gens = poke_model.get_all_generations() # BERRIA
+        all_gens = poke_model.get_all_generations() 
         
         return render_template('search_pokemon.html', 
                              pokemon_list=results, 
                              types=all_types,
-                             generations=all_gens,      # BERRIA
+                             generations=all_gens,      
                              current_name=name_query,
                              current_type=type_query,
-                             current_gen=gen_query,     # BERRIA
-                             current_evo=evo_query)     # BERRIA
-    # ... (aurreko kodea) ...
+                             current_gen=gen_query,     
+                             current_evo=evo_query)     
+    
 
     @bp.route('/pokedex/details/<int:pokemon_id>')
     def view_details(pokemon_id):
@@ -112,7 +112,7 @@ def pokedex_blueprint():
         
         # 3. Ahuleziak (BERRIA)
         weaknesses = poke_model.get_weaknesses(types)
-        strengths = poke_model.get_strengths(types)  # <--- GEHITU HAU
+        strengths = poke_model.get_strengths(types)  
         
         # 4. Eboluzioak (BERRIA)
         evolutions = poke_model.get_evolution_family(pokemon_id)
@@ -121,8 +121,8 @@ def pokedex_blueprint():
                              p=pokemon, 
                              types=types,
                              weaknesses=weaknesses,
-                             strengths=strengths,  # <--- BERRIA
-                             evolutions=evolutions,  # <--- BERRIA
+                             strengths=strengths,  
+                             evolutions=evolutions,  
                              previous_filters=request.args)
-    # ⚠️ HAU DA FALTA ZENA: Blueprint-a itzuli behar da amaieran
+    
     return bp

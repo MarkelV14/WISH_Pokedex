@@ -13,11 +13,11 @@ def auth_blueprint():
     user_model = UserModel(db)
     auth_model = AuthModel(db)
     
-    # --- RUTA LOGIN (SAIOA HASI) ---
+    # ---  (SAIOA HASI) ---
     @bp.route('/login', methods=['GET', 'POST'])
     def login():
         if request.method == 'POST':
-            # Caso 7: Botón registro (Gestionado en HTML con <a>, pero si fuera submit...)
+            #  Botón registro (Gestionado en HTML con <a>, pero si fuera submit...)
             if 'register_btn' in request.form:
                  return redirect(url_for('auth.register'))
 
@@ -25,20 +25,20 @@ def auth_blueprint():
             password = request.form.get('password')
             remember_me = request.form.get('remember_me') == 'on'
             
-            # Casos 4, 5, 6: Campos vacíos
+            # Campos vacíos
             if not username or not password:
                 flash('Eremu guztiak bete behar dira', 'danger')
                 return render_template('login.html')
 
             user = user_model.verify_password(username, password)
             
-            # Casos 2 y 3: Usuario no existe o contraseña mal
+            #  Usuario no existe o contraseña mal
             if user:
                 if not user['is_approved']:
                     flash('Zure kontua oraindik ez da onartu. Itxaron administratzailearen baieztapena', 'warning')
                     return redirect(url_for('auth.login'))
                 
-                # Caso 1: Login correcto
+                #Login correcto
                 session_token = auth_model.create_session(user['id'], remember_me)
                 session['user_id'] = user['id']
                 session['username'] = user['username']
@@ -57,11 +57,11 @@ def auth_blueprint():
         
         return render_template('login.html')
     
-    # --- RUTA REGISTRO (ERREGISTRATU) ---
+    # ---  (ERREGISTRATU) ---
     @bp.route('/register', methods=['GET', 'POST'])
     def register():
         if request.method == 'POST':
-            # Caso 12: Cancelar (Gestionado en HTML, pero por si acaso)
+            #  Cancelar (Gestionado en HTML, pero por si acaso)
             if 'cancel' in request.form:
                 return redirect(url_for('auth.login'))
 
@@ -70,39 +70,39 @@ def auth_blueprint():
             password = request.form.get('password', '').strip()
             confirm_password = request.form.get('confirm_password', '').strip()
             
-            # Caso 7, 8, 9, 10, 11: Campos vacíos
+            #  Campos vacíos
             if not username or not email or not password or not confirm_password:
                 flash('Eremu guztiak bete behar dira', 'danger')
                 return render_template('register.html')
 
-            # Caso 2: Pasahitz ezberdinak
+            #  Pasahitz ezberdinak
             if password != confirm_password:
                 flash('Pasahitzak ez datoz bat', 'danger')
                 return render_template('register.html')
             
-            # Caso 3: Pasahitz laburregia
+            #  Pasahitz laburregia
             if len(password) < 6:
                 flash('Pasahitzak gutxienez 6 karaktere izan behar ditu', 'danger')
                 return render_template('register.html')
 
-            # Caso 4: Izen motzegia (Inventado: min 3 chars)
+            #  Izen motzegia ( min 3 chars)
             if len(username) < 3:
                 flash('Erabiltzaile izena motzegia da', 'danger')
                 return render_template('register.html')
 
-            # Caso 5: Izen luzegia (Inventado: max 20 chars)
+            #  Izen luzegia ( max 20 chars)
             if len(username) > 20:
                 flash('Erabiltzaile izena luzegia da', 'danger')
                 return render_template('register.html')
 
-            # Caso 6: Email formatu okerra
+            #  Email formatu okerra
             email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
             if not re.match(email_regex, email):
                 flash('Email formatua okerra da', 'danger')
                 return render_template('register.html')
             
             try:
-                # Caso 13 (Duplicado) y Caso 1 (Éxito)
+                #  (Duplicado) y Caso 1 (Éxito)
                 user_id = user_model.create_user(username, email, password)
                 flash('Erregistroa ondo burutu da! Administratzaileak zure kontua baieztatu behar du.', 'success')
                 return redirect(url_for('auth.login'))
@@ -111,7 +111,7 @@ def auth_blueprint():
         
         return render_template('register.html')
     
-    # --- RUTA EDITAR PERFIL (ERABILTZAILE KUDEAKETA) - NUEVA ---
+    # ---  (ERABILTZAILE KUDEAKETA)  ---
     @bp.route('/profile/edit', methods=['GET', 'POST'])
     def edit_profile():
         if 'user_id' not in session:
@@ -120,7 +120,7 @@ def auth_blueprint():
         user_id = session['user_id']
         
         if request.method == 'POST':
-            # Caso 10: Cancelar / Atrás
+            #  Cancelar / Atrás
             if 'back' in request.form:
                 return redirect(url_for('auth.dashboard'))
 
@@ -133,7 +133,7 @@ def auth_blueprint():
                 flash('Eremu guztiak bete behar dira (Bio barne)', 'danger')
                 return redirect(url_for('auth.edit_profile'))
 
-            # Casos 6, 8: Formato nombre/bio (Simulamos validación simple)
+            #  Formato nombre/bio (Simulamos validación simple)
             if len(username) < 3:
                 flash('Izena motzegia da', 'danger')
                 return redirect(url_for('auth.edit_profile'))
@@ -142,7 +142,7 @@ def auth_blueprint():
                 flash('Biografia luzegia da', 'danger')
                 return redirect(url_for('auth.edit_profile'))
 
-            # Caso 7: Email formato
+            #  Email formato
             email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
             if not re.match(email_regex, email):
                 flash('Email formatua okerra da', 'danger')
@@ -150,7 +150,7 @@ def auth_blueprint():
 
             try:
                 # Caso 1 (Éxito) y Caso 9 (Email duplicado)
-                # Nota: Necesitas añadir update_user en user_model si no valida duplicados ahí
+                
                 user_model.update_user(user_id, username=username, email=email, bio=bio)
                 flash('Profila ondo editatu da', 'success')
                 return redirect(url_for('auth.dashboard'))

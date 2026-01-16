@@ -16,7 +16,7 @@ def notifications_blueprint():
         db = DatabaseConnection()
         msg_model = MessageModel(db)
         
-        # --- CORRECCIÓN: Leer el parámetro de la URL ---
+        
         # El botón envía ?filter=mine, así que debemos capturarlo aquí.
         filter_type = request.args.get('filter', 'all')
         
@@ -31,7 +31,7 @@ def notifications_blueprint():
                              filter_type=filter_type, # Pasamos el tipo real para que el botón cambie
                              current_user=username)
 
-    # --- RUTA PARA FILTRO AVANZADO (Checkboxes) ---
+    # --- (Checkboxes) ---
     @bp.route('/notifications/filter', methods=['GET', 'POST'])
     def filter_notifications():
         if 'user_id' not in session:
@@ -42,7 +42,7 @@ def notifications_blueprint():
         # GET: Mostrar pantalla de selección
         if request.method == 'GET':
             user_model = UserModel(db)
-            # Asegúrate de que 'get_all_users' exista en tu UserModel
+            
             all_users = user_model.get_all_users() 
             return render_template('notifications_filter.html', 
                                  users=all_users, 
@@ -61,13 +61,11 @@ def notifications_blueprint():
                  # Recoger IDs seleccionados
                  selected_ids = request.form.getlist('user_ids')
                  
-                 # NOTA IMPORTANTE:
-                 # Debes crear el método 'get_messages_by_users' en MessageModel
-                 # para que esta línea funcione. Si no, dará error.
+                 
                  if hasattr(msg_model, 'get_messages_by_users'):
                     messages = msg_model.get_messages_by_users(selected_ids)
                  else:
-                    # Fallback si no has creado el método aún
+                    
                     messages = msg_model.get_all_messages()
                  
                  current_filter = 'custom'

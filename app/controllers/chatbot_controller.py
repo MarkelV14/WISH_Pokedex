@@ -42,13 +42,13 @@ def stats():
     model = ChatbotModel(db)
     
     # 2. Lortu Pokemon guztien izenak (Autokonpletaturako)
-    # Funtzio hau 'chatbot_model.py'-n sortu dugu aurreko pausoan
+    
     all_names = model.get_all_pokemon_names()
     
     found_pokemon = None
     
     if request.method == 'POST':
-        # Input-a jasotzen dugu gordina
+        
         search_term = request.form.get('pokemon_name')
         
         # 2. Eskakizuna: Izena hutsik badago
@@ -135,7 +135,7 @@ def evolution():
             if not current_pokemon:
                 flash(f"Ez da Pokemon hori aurkitu: '{search_term}'", "danger")
             else:
-                # --- BEGIZTA MAGIKOA (WHILE LOOP) ---
+                # --- (WHILE LOOP) ---
                 # 1. Begiratu ea lehenengoak eboluziorik duen
                 next_id = current_pokemon['EboluzioaID']
                 
